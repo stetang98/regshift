@@ -10,7 +10,7 @@ export type Severity = 'high' | 'medium' | 'low';
 export type FindingStatus = 'gap' | 'partial' | 'compliant' | 'not-applicable';
 export type RiskLevel = 'high' | 'medium' | 'low';
 export type Effort = 'S' | 'M' | 'L';
-export type ChunkKind = 'function' | 'class' | 'route' | 'config' | 'component';
+export type ChunkKind = 'function' | 'class' | 'route' | 'config' | 'component' | 'module';
 export type ChangeKind = 'modify' | 'add';
 export type DecisionValue = 'approved' | 'rejected' | 'needs-work';
 

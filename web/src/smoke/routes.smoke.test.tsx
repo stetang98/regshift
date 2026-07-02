@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 
 const FIXTURE_DIR = resolve(process.cwd(), 'public/runs/demo');
-const RUN_ID = 'run-2026-06-28-lc-a41';
+const RUN_ID = 'demo';
 
 function stubFetch(): void {
   vi.stubGlobal(
@@ -42,7 +42,7 @@ async function renderRoute(hash: string): Promise<void> {
   window.location.hash = hash;
   render(<App />);
   // Shell case-strip renders once artifacts are loaded.
-  await screen.findAllByText(/EU AI Act \(Regulation 2024\/1689\)/);
+  await screen.findAllByText(/EU AI Act \(Regulation \(EU\) 2024\/1689\)/);
 }
 
 function expectNoErrorPanel(): void {
@@ -65,19 +65,19 @@ describe('route smoke (real fixtures)', () => {
     await renderRoute('#/');
     expect(screen.getByText('Compliance review dossier')).toBeTruthy();
     expect(
-      screen.getByRole('heading', { name: /EU AI Act \(Regulation 2024\/1689\)/ }),
+      screen.getByRole('heading', { name: /EU AI Act \(Regulation \(EU\) 2024\/1689\)/ }),
     ).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Open review queue' })).toBeTruthy();
-    expect(screen.getByText('1,483')).toBeTruthy(); // chunks stat, formatted
+    expect(screen.getByText('1,139')).toBeTruthy(); // chunks stat, formatted
     expectNoErrorPanel();
   });
 
   it('#/obligations renders the register with fixture content', async () => {
     await renderRoute('#/obligations');
     expect(screen.getByRole('heading', { name: 'Obligations register' })).toBeTruthy();
-    expect(screen.getByText('Disclose AI interaction to end users')).toBeTruthy();
+    expect(screen.getByText('Transparency Obligation for AI Systems Interacting Directly with Natural Persons')).toBeTruthy();
     // expand the first obligation and check its source quote appears
-    fireEvent.click(screen.getByRole('button', { name: /Disclose AI interaction/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Transparency Obligation for AI Systems Interacting/ }));
     expect(
       screen.getByText(/“Providers shall ensure that AI systems intended to interact directly/),
     ).toBeTruthy();
@@ -87,24 +87,24 @@ describe('route smoke (real fixtures)', () => {
   it('#/impact renders both panes and cross-selects an obligation', async () => {
     await renderRoute('#/impact');
     expect(screen.getByRole('heading', { name: 'Impact map' })).toBeTruthy();
-    expect(screen.getAllByText('streamResponse.js').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('chatV1.js').length).toBeGreaterThan(0);
     expectNoErrorPanel();
   });
 
   it('#/impact?ob=… highlights affected files with evidence', async () => {
     await renderRoute('#/impact?ob=OB-050-1');
-    expect(await screen.findByText(/touches 3 files/)).toBeTruthy();
+    expect(await screen.findByText(/touches 2 files/)).toBeTruthy();
     // evidence quote from F-001 in messages.js
-    expect(screen.getAllByText(/getMessagesByConvoId/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/chatV1/).length).toBeGreaterThan(0);
     expectNoErrorPanel();
   });
 
   it('#/proposals/P-001 renders diff, tests and decision panel', async () => {
     await renderRoute('#/proposals/P-001');
     expect(
-      screen.getByRole('heading', { name: /Attach Art\. 50\(1\) disclosure metadata/ }),
+      screen.getByRole('heading', { name: /Implement basic risk management in chatV1 controller/ }),
     ).toBeTruthy();
-    expect(screen.getByRole('figure', { name: /Unified diff for api\/server\/utils/ })).toBeTruthy();
+    expect(screen.getByRole('figure', { name: /Unified diff for api\/server\/controllers/ })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Record decision' })).toBeTruthy();
     expectNoErrorPanel();
   });
