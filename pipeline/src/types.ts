@@ -12,7 +12,7 @@ export const ObligationSchema = z.object({
   requirement: z.string().min(10),
   severity: Severity,
   sourceQuote: z.string().min(10),
-  sourceUrl: z.string().url(),
+  sourceUrl: z.string().url().refine((u) => /^https?:\/\//i.test(u), 'http(s) URLs only'),
 });
 export type Obligation = z.infer<typeof ObligationSchema>;
 

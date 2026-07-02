@@ -21,6 +21,7 @@ export function readDecisions(runId: string): DecisionMap {
     if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return {};
     const out: Record<string, ReviewDecision> = {};
     for (const [proposalId, value] of Object.entries(parsed as Record<string, unknown>)) {
+      if (['__proto__', 'constructor', 'prototype'].includes(proposalId)) continue;
       if (typeof value !== 'object' || value === null) continue;
       const entry = value as Partial<ReviewDecision>;
       if (typeof entry.decision !== 'string' || !VALID_DECISIONS.includes(entry.decision)) continue;
