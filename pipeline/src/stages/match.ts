@@ -24,16 +24,30 @@ obligation and ONE code location from a self-hosted AI chat platform (LibreChat)
 Judge this code location against the obligation.
 
 Return JSON:
-{"relevant": bool,        // is this code surface where the obligation applies?
+{"relevant": bool,
  "status": "gap" | "partial" | "compliant" | "not-applicable",
  "reason": "one or two sentences, concrete, reference what the code does"}
 
-Rules:
-- "gap": the obligation applies here and the required behaviour is absent.
-- "partial": some of the required behaviour exists but is incomplete.
-- "compliant": the required behaviour is implemented here.
-- "not-applicable": obligation does not apply to this code (then relevant=false).
-- Judge ONLY from the code shown. Do not invent behaviour you cannot see.`;
+Definitions:
+- relevant=true when this location is part of the surface the obligation governs —
+  where the required behaviour lives, OR WOULD NATURALLY LIVE IF IT WERE IMPLEMENTED.
+  Absence of the behaviour does NOT make the location irrelevant; absence at a
+  governed surface is exactly what a gap is.
+- "gap": relevant surface, required behaviour absent in the code shown.
+- "partial": some of the required behaviour exists here but is incomplete.
+- "compliant": the required behaviour is clearly implemented here.
+- "not-applicable" (and relevant=false): ONLY when this code has nothing to do with
+  the obligation's subject matter.
+
+Anchoring examples:
+1) Obligation: users must be informed they are interacting with an AI system.
+   Code: an Express route that returns model completions to the client, no disclosure
+   field or banner anywhere. → {"relevant": true, "status": "gap", ...} — this is the
+   response surface where disclosure belongs.
+2) Same obligation. Code: a password-reset email helper.
+   → {"relevant": false, "status": "not-applicable", ...}
+
+Judge ONLY from the code shown. Do not invent behaviour you cannot see.`;
 
 function buildIndex(codemap: Codemap, repoRoot: string): { ms: MiniSearch<CandidateDoc>; docs: Map<string, CandidateDoc> } {
   const docs = new Map<string, CandidateDoc>();
@@ -66,7 +80,7 @@ function buildIndex(codemap: Codemap, repoRoot: string): { ms: MiniSearch<Candid
 function candidatesFor(ob: Obligation, ms: MiniSearch<CandidateDoc>, docs: Map<string, CandidateDoc>): CandidateDoc[] {
   const artKey = ob.articleRef.replace(/\(.*$/, ''); // "Art. 50(1)" -> "Art. 50"
   const hintSignals = new Set(ARTICLE_SIGNAL_HINTS[artKey] ?? []);
-  const query = `${ob.title} ${ob.requirement}`;
+  const query = `${ob.title} ${ob.requirement} ${ob.trigger}`;
   const ranked = ms.search(query, { prefix: true, fuzzy: 0.1 }).map((r) => r.id as string);
 
   // Deterministic boost: chunks carrying hinted signals go first, BM25 fills the rest.

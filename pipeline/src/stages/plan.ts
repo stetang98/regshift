@@ -29,7 +29,7 @@ const DIFF_SYSTEM = `You are writing a unified diff for ONE file of LibreChat im
 change described. You are given the current code of the relevant region.
 
 Return JSON: {"diff": "..."} where diff is a valid unified diff:
-- starts with "--- a/<path>" and "+++ b/<path>"
+- the FIRST TWO LINES must be exactly the two header lines given in the user message
 - hunk headers "@@ -start,count +start,count @@"
 - context lines prefixed with a space, removals with "-", additions with "+"
 - keep the change minimal and consistent with the surrounding code style
@@ -37,8 +37,16 @@ Return JSON: {"diff": "..."} where diff is a valid unified diff:
 
 const DiffSchema = z.object({ diff: z.string().min(40) });
 
-function looksLikeUnifiedDiff(diff: string, file: string): boolean {
-  return diff.includes(`--- a/${file}`) && diff.includes(`+++ b/${file}`) && diff.includes('@@');
+/** Accept slightly off header forms from small models, then normalise to a/ b/. */
+function normalizeUnifiedDiff(diff: string, file: string): string | null {
+  if (!diff.includes('@@')) return null;
+  const lines = diff.replace(/\r\n/g, '\n').split('\n');
+  const fromIdx = lines.findIndex((l) => l.startsWith('---') && l.includes(file));
+  const toIdx = lines.findIndex((l) => l.startsWith('+++') && l.includes(file));
+  if (fromIdx === -1 || toIdx === -1) return null;
+  lines[fromIdx] = `--- a/${file}`;
+  lines[toIdx] = `+++ b/${file}`;
+  return lines.join('\n');
 }
 
 export async function planChanges(
@@ -95,12 +103,13 @@ export async function planChanges(
           const { diff } = await jsonCall(
             DiffSchema,
             DIFF_SYSTEM,
-            `FILE: ${primary.file}\nCHANGE: ${draft.title}\nPLAN: ${changes[0]?.sketch ?? draft.rationale}\n\nCURRENT CODE (lines ${Math.max(1, primary.startLine - 5)}-${primary.endLine + 10}):\n\`\`\`\n${context}\n\`\`\``,
+            `FILE: ${primary.file}\nREQUIRED HEADER LINES:\n--- a/${primary.file}\n+++ b/${primary.file}\n\nCHANGE: ${draft.title}\nPLAN: ${changes[0]?.sketch ?? draft.rationale}\n\nCURRENT CODE (lines ${Math.max(1, primary.startLine - 5)}-${primary.endLine + 10}):\n\`\`\`\n${context}\n\`\`\``,
           );
-          if (looksLikeUnifiedDiff(diff, primary.file)) {
+          const normalized = normalizeUnifiedDiff(diff, primary.file);
+          if (normalized) {
             const idx = changes.findIndex((c) => c.file === primary.file);
             const target = idx >= 0 ? idx : 0;
-            changes[target] = { file: primary.file, kind: 'modify', sketch: diff, isFullDiff: true };
+            changes[target] = { file: primary.file, kind: 'modify', sketch: normalized, isFullDiff: true };
           }
         } catch (err) {
           console.warn(`    ! diff generation failed: ${(err as Error).message.slice(0, 120)} — keeping plan sketch`);
