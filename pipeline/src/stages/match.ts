@@ -85,17 +85,31 @@ function candidatesFor(ob: Obligation, ms: MiniSearch<CandidateDoc>, docs: Map<s
 
 const STATUS_RANK = { gap: 3, partial: 2, compliant: 1, 'not-applicable': 0 } as const;
 
+/**
+ * Time-budgeted execution: the sandboxed shell that hosts long runs enforces a
+ * hard wall-clock cap, so stages exit cleanly before it and resume from
+ * checkpoints on the next invocation. `complete=false` means "rerun me".
+ */
+export function timeBudgetMs(): number {
+  return Number(process.env.REGSHIFT_TIME_BUDGET_MS ?? 0) || Number.POSITIVE_INFINITY;
+}
+
 export async function matchObligations(
   obligations: Obligation[],
   codemap: Codemap,
   repoRoot: string,
   checkpointDir?: string,
-): Promise<Finding[]> {
+): Promise<{ findings: Finding[]; complete: boolean }> {
   const { ms, docs } = buildIndex(codemap, repoRoot);
   const findings: Finding[] = [];
   let fCounter = 0;
+  const started = Date.now();
 
   for (const ob of obligations) {
+    if (Date.now() - started > timeBudgetMs()) {
+      console.log(`  match: time budget exhausted after ${fCounter} obligations — rerun to continue`);
+      return { findings, complete: false };
+    }
     // Per-obligation checkpoint: a crash mid-run only costs the current obligation.
     const ckpt = checkpointDir ? join(checkpointDir, `${ob.id}.json`) : null;
     if (ckpt && exists(ckpt)) {
@@ -169,5 +183,5 @@ ${snippet}
     }
     findings.push(finding);
   }
-  return findings;
+  return { findings, complete: true };
 }

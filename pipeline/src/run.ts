@@ -61,7 +61,12 @@ async function main(): Promise<void> {
 
   let findings: Finding[];
   if (stage('match') && fresh('findings.json')) {
-    findings = await matchObligations(obligations, codemap, REPO_ROOT, path('findings-partial'));
+    const result = await matchObligations(obligations, codemap, REPO_ROOT, path('findings-partial'));
+    findings = result.findings;
+    if (!result.complete) {
+      console.log(`◦ match: partial (${findings.length}/${obligations.length}) — checkpoints saved, rerun to continue`);
+      return;
+    }
     writeJson(path('findings.json'), findings);
     console.log(`✓ match: ${findings.length} findings, ${findings.filter((f) => f.status === 'gap').length} gaps`);
   } else {
@@ -71,7 +76,12 @@ async function main(): Promise<void> {
 
   let proposals: Proposal[];
   if (stage('plan') && fresh('proposals.json')) {
-    proposals = await planChanges(findings, obligations, REPO_ROOT);
+    const result = await planChanges(findings, obligations, REPO_ROOT, path('proposals-partial'));
+    proposals = result.proposals;
+    if (!result.complete) {
+      console.log(`◦ plan: partial (${proposals.length}) — checkpoints saved, rerun to continue`);
+      return;
+    }
     writeJson(path('proposals.json'), proposals);
     console.log(`✓ plan: ${proposals.length} proposals`);
   } else {

@@ -30,9 +30,13 @@ export class LlmError extends Error {
   }
 }
 
+// A single hung request must never stall an unattended multi-hour run.
+const REQUEST_TIMEOUT_MS = Number(process.env.LLM_TIMEOUT_MS ?? 240_000);
+
 async function chatOllama(messages: ChatMessage[], json: boolean): Promise<string> {
   const res = await fetch(`${BASE_URL}/api/chat`, {
     method: 'POST',
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       model: MODEL,
@@ -50,6 +54,7 @@ async function chatOllama(messages: ChatMessage[], json: boolean): Promise<strin
 async function chatOpenAi(messages: ChatMessage[], json: boolean): Promise<string> {
   const res = await fetch(`${BASE_URL}/v1/chat/completions`, {
     method: 'POST',
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     headers: {
       'content-type': 'application/json',
       ...(API_KEY ? { authorization: `Bearer ${API_KEY}` } : {}),

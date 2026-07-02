@@ -1,7 +1,8 @@
 import { join } from 'node:path';
 import { z } from 'zod';
 import { jsonCall } from '../llm.js';
-import { readLines } from '../io.js';
+import { exists, readJson, readLines, writeJson } from '../io.js';
+import { timeBudgetMs } from './match.js';
 import { ProposalDraftSchema, type Finding, type Obligation, type Proposal } from '../types.js';
 
 const FULL_DIFF_COUNT = 3;
@@ -44,7 +45,8 @@ export async function planChanges(
   findings: Finding[],
   obligations: Obligation[],
   repoRoot: string,
-): Promise<Proposal[]> {
+  checkpointDir?: string,
+): Promise<{ proposals: Proposal[]; complete: boolean }> {
   const byId = new Map(obligations.map((o) => [o.id, o]));
   const actionable = findings
     .filter((f) => f.status === 'gap' || f.status === 'partial')
@@ -56,9 +58,21 @@ export async function planChanges(
     });
 
   const proposals: Proposal[] = [];
+  const started = Date.now();
   for (const [i, finding] of actionable.entries()) {
     const ob = byId.get(finding.obligationId);
     if (!ob) continue;
+    if (Date.now() - started > timeBudgetMs()) {
+      console.log(`  plan: time budget exhausted after ${proposals.length} proposals — rerun to continue`);
+      return { proposals, complete: false };
+    }
+    const ckpt = checkpointDir ? join(checkpointDir, `${finding.id}.json`) : null;
+    if (ckpt && exists(ckpt)) {
+      const cached = readJson<Omit<Proposal, 'id'>>(ckpt);
+      proposals.push({ ...cached, id: `P-${String(proposals.length + 1).padStart(3, '0')}` });
+      console.log(`  plan: ${finding.id} — reused checkpoint`);
+      continue;
+    }
     console.log(`  plan: ${finding.id} (${ob.articleRef}, ${finding.status})`);
     const sitesBlock = finding.sites
       .map((s) => `${s.file}:${s.startLine}-${s.endLine}\nWhy flagged: ${s.reason}\n\`\`\`\n${s.evidence}\n\`\`\``)
@@ -93,7 +107,7 @@ export async function planChanges(
         }
       }
 
-      proposals.push({
+      const proposal: Proposal = {
         id: `P-${String(proposals.length + 1).padStart(3, '0')}`,
         findingId: finding.id,
         obligationId: ob.id,
@@ -103,10 +117,15 @@ export async function planChanges(
         effort: draft.effort,
         changes,
         tests: draft.tests,
-      });
+      };
+      if (ckpt) {
+        const { id: _id, ...rest } = proposal;
+        writeJson(ckpt, rest);
+      }
+      proposals.push(proposal);
     } catch (err) {
       console.warn(`    ! proposal failed for ${finding.id}: ${(err as Error).message.slice(0, 120)} — skipped`);
     }
   }
-  return proposals;
+  return { proposals, complete: true };
 }
