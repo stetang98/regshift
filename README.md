@@ -6,7 +6,7 @@
 
 Built for **UK AI Agent Hackathon EP5 × Conduct** (Conduct Track: *Make Legacy Move*).
 
-**Live console:** `<LIVE_URL>` · **Demo video:** `<VIDEO_URL>` · Apache-2.0
+**Live console:** [regshift.vercel.app](https://regshift.vercel.app) · **Demo video:** `<VIDEO_URL>` · Apache-2.0
 
 </div>
 
@@ -46,7 +46,7 @@ Flagship example: **Art. 50(1)** (*users must be told they're talking to an AI*)
 
 ## Try it in 2 minutes (judges)
 
-1. Open the live console: `<LIVE_URL>` — you land on the **dossier**: real run, real numbers.
+1. Open the live console: **[regshift.vercel.app](https://regshift.vercel.app)** — you land on the **dossier**: real run, real numbers.
 2. **Obligations** → expand *Art. 50(1)* — verbatim source quote, severity, actor.
 3. **Impact map** → select the same obligation — see exactly which files it touches and why (quoted code evidence).
 4. Open a **proposal** → read the compiled diff → click **Approve** (or reject — your call; that's the point).
