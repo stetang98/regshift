@@ -4,3 +4,11 @@ target/
 .env
 dist/
 .DS_Store
+video/build/
+video/verify/
+video/node_modules/
+video/cards/
+video/*.mjs
+video/lib/
+video/package.json
+video/pnpm-lock.yaml
