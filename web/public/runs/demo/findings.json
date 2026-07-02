@@ -1,0 +1,514 @@
+[
+  {
+    "obligationId": "OB-009-1",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code location does not contain any implementation of a risk management system. It focuses on handling chat requests and responses, but does not address the establishment or maintenance of a risk management system as required by Art. 9(1)."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-001"
+  },
+  {
+    "obligationId": "OB-009-2",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code location does not contain any functionality related to conducting regular systematic review and updating of the risk management system. It appears to be a handler for chat requests, but lacks any mechanism for ongoing risk assessment or updates."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-002"
+  },
+  {
+    "obligationId": "OB-009-3",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "startLine": 37,
+        "endLine": 196,
+        "evidence": "class ModelEndHandler {\n  /**\n   * @param {Array<UsageMetadata>} collectedUsage\n   * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n   *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n   *   events. Used to persist Vertex Gemini 3 thought signatures across DB\n   *   round-trips so resumed conversations don't 400 on the next API call.\n   *   Each `model_end` may emit multiple tool calls (one per LLM cycle in a\n   *   tool-using turn); per-id storage preserves the mapping so each tool\n   *   call's signature can be restored onto the right reconstructed\n   *   AIMessage rather than being concentrated on the last one.\n   *   Optional; when `null`, the handler is a no-op for signatures. Non-Vertex",
+        "reason": "The code does not include any mechanism to assess or manage residual risks associated with AI systems. It focuses on handling model end events, collecting usage metadata, and logging errors."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-003"
+  },
+  {
+    "obligationId": "OB-010-1",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "startLine": 37,
+        "endLine": 196,
+        "evidence": "class ModelEndHandler {\n  /**\n   * @param {Array<UsageMetadata>} collectedUsage\n   * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n   *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n   *   events. Used to persist Vertex Gemini 3 thought signatures across DB\n   *   round-trips so resumed conversations don't 400 on the next API call.\n   *   Each `model_end` may emit multiple tool calls (one per LLM cycle in a\n   *   tool-using turn); per-id storage preserves the mapping so each tool\n   *   call's signature can be restored onto the right reconstructed\n   *   AIMessage rather than being concentrated on the last one.\n   *   Optional; when `null`, the handler is a no-op for signatures. Non-Vertex",
+        "reason": "The code does not include any functionality related to developing, validating, or testing data sets that meet quality criteria as per paragraphs 2 to 5 of Art. 10(1) — Data Quality Criteria."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-004"
+  },
+  {
+    "obligationId": "OB-010-2",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any data governance or management practices such as data collection, preparation, bias assessment, mitigation, and data gaps. It primarily handles the processing of user input and generating responses."
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "startLine": 37,
+        "endLine": 196,
+        "evidence": "class ModelEndHandler {\n  /**\n   * @param {Array<UsageMetadata>} collectedUsage\n   * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n   *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n   *   events. Used to persist Vertex Gemini 3 thought signatures across DB\n   *   round-trips so resumed conversations don't 400 on the next API call.\n   *   Each `model_end` may emit multiple tool calls (one per LLM cycle in a\n   *   tool-using turn); per-id storage preserves the mapping so each tool\n   *   call's signature can be restored onto the right reconstructed\n   *   AIMessage rather than being concentrated on the last one.\n   *   Optional; when `null`, the handler is a no-op for signatures. Non-Vertex",
+        "reason": "The code location does not contain any data governance or management practices. It is focused on handling model end events and collecting usage metadata, but it lacks the required functionality for data collection, preparation, bias assessment, mitigation, and data gaps."
+      }
+    ],
+    "summary": "2 relevant site(s); 2 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-005"
+  },
+  {
+    "obligationId": "OB-010-3",
+    "status": "not-applicable",
+    "confidence": 0.3,
+    "sites": [],
+    "summary": "No code surface in scope was judged relevant to Art. 10(5(a)-(f)).",
+    "id": "F-006"
+  },
+  {
+    "obligationId": "OB-012-1",
+    "status": "gap",
+    "confidence": 0.67,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "startLine": 183,
+        "endLine": 362,
+        "evidence": "async function finalizeResumedTurn({ req, client, job, streamId, conversationId, addTitle }) {\n  const userId = req.user.id;\n  const checkpointerCfg = req.config?.endpoints?.[EModelEndpoint.agents]?.checkpointer;\n  const meta = job.metadata ?? {};\n  const userMessage = meta.userMessage;\n  // The response hangs off the user message; the *user* message's own parent decides\n  // whether this is the first turn of the conversation (title eligibility).\n  const parentMessageId = userMessage?.messageId ?? Constants.NO_PARENT;\n  const isFirstTurn = (userMessage?.parentMessageId ?? Constants.NO_PARENT) === Constants.NO_PARENT;\n  const responseMessageId = meta.responseMessageId ?? `${userMessage?.messageId ?? 'resumed'}_`;\n  // Sourced from the paused job (persisted at creation), not the resume body — a\n  // temporary chat must stay temporary on resume so its messages aren't persisted.",
+        "reason": "The code does not include any logging or recording of events over the system's lifetime. It only handles the finalization of a resumed turn and does not record logs."
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any logging or recording of events over the lifetime of the AI system."
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "startLine": 37,
+        "endLine": 196,
+        "evidence": "class ModelEndHandler {\n  /**\n   * @param {Array<UsageMetadata>} collectedUsage\n   * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n   *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n   *   events. Used to persist Vertex Gemini 3 thought signatures across DB\n   *   round-trips so resumed conversations don't 400 on the next API call.\n   *   Each `model_end` may emit multiple tool calls (one per LLM cycle in a\n   *   tool-using turn); per-id storage preserves the mapping so each tool\n   *   call's signature can be restored onto the right reconstructed\n   *   AIMessage rather than being concentrated on the last one.\n   *   Optional; when `null`, the handler is a no-op for signatures. Non-Vertex",
+        "reason": "The code does not include any automatic recording of events (logs) over the lifetime of the system. It only handles specific events and logs errors, but it lacks a mechanism to record all events."
+      }
+    ],
+    "summary": "3 relevant site(s); 2 gap, 1 partial, 0 compliant. Overall: gap.",
+    "id": "F-007"
+  },
+  {
+    "obligationId": "OB-012-2",
+    "status": "gap",
+    "confidence": 0.6,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "startLine": 189,
+        "endLine": 896,
+        "evidence": "const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n  const {\n    text,\n    isRegenerate,\n    endpointOption,\n    conversationId: reqConversationId,\n    isContinued = false,\n    editedContent = null,\n    parentMessageId = null,\n    overrideParentMessageId = null,\n    responseMessageId: editedResponseMessageId = null,\n  } = req.body;",
+        "reason": "The code does not include any logging of events relevant for identifying situations that may result in the high-risk AI system presenting a risk within the meaning of Article 79(1) or in a substantial modification."
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code logs the request body, but it does not log events relevant for identifying situations that may result in a high-risk AI system presenting a risk."
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "startLine": 158,
+        "endLine": 876,
+        "evidence": "const OpenAIChatCompletionController = async (req, res) => {\n  const appConfig = req.config;\n  const requestStartTime = Date.now();\n\n  const validation = validateRequest(req.body);\n  if (isChatCompletionValidationFailure(validation)) {\n    return sendErrorResponse(res, 400, validation.error);\n  }\n\n  const request = validation.request;\n  const agentId = request.model;\n",
+        "reason": "The code does not include logging of events relevant for identifying situations that may result in the high-risk AI system presenting a risk within the meaning of Article 79(1) or in a substantial modification."
+      },
+      {
+        "file": "api/server/controllers/agents/errors.js",
+        "startLine": 35,
+        "endLine": 139,
+        "evidence": "const createErrorHandler = ({ req, res, getContext, originPath = '/assistants/chat/' }) => {\n  const cache = getLogStores(CacheKeys.ABORT_KEYS);\n\n  /**\n   * Handles errors that occur during the chat process\n   * @param {Error} error - The error that occurred\n   * @returns {Promise<void>}\n   */\n  return async (error) => {\n    const {\n      openai,\n      run_id,",
+        "reason": "The code logs errors using `logger.error` and `logger.debug`, but it does not log events relevant for identifying situations that may result in a high-risk AI system presenting a risk. The logging is limited to error messages and debug information, which may not cover all necessary events."
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "startLine": 37,
+        "endLine": 196,
+        "evidence": "class ModelEndHandler {\n  /**\n   * @param {Array<UsageMetadata>} collectedUsage\n   * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n   *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n   *   events. Used to persist Vertex Gemini 3 thought signatures across DB\n   *   round-trips so resumed conversations don't 400 on the next API call.\n   *   Each `model_end` may emit multiple tool calls (one per LLM cycle in a\n   *   tool-using turn); per-id storage preserves the mapping so each tool\n   *   call's signature can be restored onto the right reconstructed\n   *   AIMessage rather than being concentrated on the last one.\n   *   Optional; when `null`, the handler is a no-op for signatures. Non-Vertex",
+        "reason": "The code does not include logging capabilities for events relevant to identifying situations that may result in a high-risk AI system presenting a risk or undergoing a substantial modification."
+      }
+    ],
+    "summary": "5 relevant site(s); 3 gap, 2 partial, 0 compliant. Overall: gap.",
+    "id": "F-008"
+  },
+  {
+    "obligationId": "OB-012-3",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include logging of the period of each use of the system, the reference database against which input data has been checked by the system, the input data for which the search has led to a match, and the identification of the natural persons involved in the verification of the results."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-009"
+  },
+  {
+    "obligationId": "OB-013-1",
+    "status": "not-applicable",
+    "confidence": 0.3,
+    "sites": [],
+    "summary": "No code surface in scope was judged relevant to Art. 13(3(a)).",
+    "id": "F-010"
+  },
+  {
+    "obligationId": "OB-013-2",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code location does not include any information about the characteristics, capabilities, and limitations of the high-risk AI system in the instructions for use."
+      },
+      {
+        "file": "api/server/routes/types/assistants.js",
+        "startLine": 1,
+        "endLine": 54,
+        "evidence": "/**\n * Enum for the possible tools that can be enabled on an assistant.\n * @readonly\n * @enum {string}\n */\n// eslint-disable-next-line no-unused-vars\nconst Tools = {\n  code_interpreter: 'code_interpreter',\n  retrieval: 'retrieval',\n  function: 'function',\n};\n",
+        "reason": "The code defines data structures and parameters for assistants, but it does not include any information about the characteristics, capabilities, or limitations of high-risk AI systems in the instructions for use."
+      }
+    ],
+    "summary": "2 relevant site(s); 2 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-011"
+  },
+  {
+    "obligationId": "OB-013-3",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any information in the instructions for use that enables deployers to interpret the output of the high-risk AI system and use it appropriately."
+      },
+      {
+        "file": "api/server/routes/types/assistants.js",
+        "startLine": 1,
+        "endLine": 54,
+        "evidence": "/**\n * Enum for the possible tools that can be enabled on an assistant.\n * @readonly\n * @enum {string}\n */\n// eslint-disable-next-line no-unused-vars\nconst Tools = {\n  code_interpreter: 'code_interpreter',\n  retrieval: 'retrieval',\n  function: 'function',\n};\n",
+        "reason": "The code defines data structures for assistants and their parameters, but it does not include any instructions or guidance on how to interpret the output of a high-risk AI system."
+      }
+    ],
+    "summary": "2 relevant site(s); 2 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-012"
+  },
+  {
+    "obligationId": "OB-014-1",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any human-machine interface tools that enable effective human oversight during use. It handles the chat request and response but lacks mechanisms for human operators to monitor or intervene."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-013"
+  },
+  {
+    "obligationId": "OB-014-2",
+    "status": "gap",
+    "confidence": 0.71,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "startLine": 189,
+        "endLine": 896,
+        "evidence": "const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n  const {\n    text,\n    isRegenerate,\n    endpointOption,\n    conversationId: reqConversationId,\n    isContinued = false,\n    editedContent = null,\n    parentMessageId = null,\n    overrideParentMessageId = null,\n    responseMessageId: editedResponseMessageId = null,\n  } = req.body;",
+        "reason": "The code location does not provide deployers with necessary oversight capabilities. It focuses on handling requests and generating responses, but it lacks mechanisms for monitoring, controlling, or understanding the system."
+      },
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "startLine": 183,
+        "endLine": 362,
+        "evidence": "async function finalizeResumedTurn({ req, client, job, streamId, conversationId, addTitle }) {\n  const userId = req.user.id;\n  const checkpointerCfg = req.config?.endpoints?.[EModelEndpoint.agents]?.checkpointer;\n  const meta = job.metadata ?? {};\n  const userMessage = meta.userMessage;\n  // The response hangs off the user message; the *user* message's own parent decides\n  // whether this is the first turn of the conversation (title eligibility).\n  const parentMessageId = userMessage?.messageId ?? Constants.NO_PARENT;\n  const isFirstTurn = (userMessage?.parentMessageId ?? Constants.NO_PARENT) === Constants.NO_PARENT;\n  const responseMessageId = meta.responseMessageId ?? `${userMessage?.messageId ?? 'resumed'}_`;\n  // Sourced from the paused job (persisted at creation), not the resume body — a\n  // temporary chat must stay temporary on resume so its messages aren't persisted.",
+        "reason": "The code location does not provide deployers with necessary oversight capabilities. It focuses on handling the finalization of a resumed turn, including generating and persisting responses, but it lacks mechanisms for monitoring, controlling, or understanding the system's behavior."
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code location does not provide deployers with necessary oversight capabilities. It handles the chat request and response but lacks mechanisms for monitoring, controlling, or understanding the system."
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "startLine": 158,
+        "endLine": 876,
+        "evidence": "const OpenAIChatCompletionController = async (req, res) => {\n  const appConfig = req.config;\n  const requestStartTime = Date.now();\n\n  const validation = validateRequest(req.body);\n  if (isChatCompletionValidationFailure(validation)) {\n    return sendErrorResponse(res, 400, validation.error);\n  }\n\n  const request = validation.request;\n  const agentId = request.model;\n",
+        "reason": "The code does not provide deployers with necessary oversight capabilities. It lacks functionality for monitoring and controlling the system."
+      },
+      {
+        "file": "api/server/controllers/agents/errors.js",
+        "startLine": 35,
+        "endLine": 139,
+        "evidence": "const createErrorHandler = ({ req, res, getContext, originPath = '/assistants/chat/' }) => {\n  const cache = getLogStores(CacheKeys.ABORT_KEYS);\n\n  /**\n   * Handles errors that occur during the chat process\n   * @param {Error} error - The error that occurred\n   * @returns {Promise<void>}\n   */\n  return async (error) => {\n    const {\n      openai,\n      run_id,",
+        "reason": "The code handles errors during the chat process but does not provide deployers with necessary oversight capabilities such as monitoring or control mechanisms."
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV2.js",
+        "startLine": 54,
+        "endLine": 508,
+        "evidence": "const chatV2 = async (req, res) => {\n  logger.debug('[/assistants/chat/] req.body', req.body);\n  const appConfig = req.config;\n\n  /** @type {{files: MongoFile[]}} */\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,",
+        "reason": "The code location does not provide any functionality for deployers to understand, monitor, or control the AI system. It handles incoming chat requests and processes them, but it lacks mechanisms for oversight capabilities."
+      }
+    ],
+    "summary": "7 relevant site(s); 5 gap, 2 partial, 0 compliant. Overall: gap.",
+    "id": "F-014"
+  },
+  {
+    "obligationId": "OB-014-3",
+    "status": "not-applicable",
+    "confidence": 0.3,
+    "sites": [],
+    "summary": "No code surface in scope was judged relevant to Art. 14(5).",
+    "id": "F-015"
+  },
+  {
+    "obligationId": "OB-015-1",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code location does not contain any information about accuracy and robustness metrics. It is a function handling chat requests but lacks the required declarations."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-016"
+  },
+  {
+    "obligationId": "OB-015-2",
+    "status": "partial",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "startLine": 189,
+        "endLine": 896,
+        "evidence": "const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n  const {\n    text,\n    isRegenerate,\n    endpointOption,\n    conversationId: reqConversationId,\n    isContinued = false,\n    editedContent = null,\n    parentMessageId = null,\n    overrideParentMessageId = null,\n    responseMessageId: editedResponseMessageId = null,\n  } = req.body;",
+        "reason": "The code handles error and fault conditions by checking if a preliminary parent message exists and logging violations for concurrent requests. However, it lacks specific measures to ensure resilience against errors, faults or inconsistencies throughout the system."
+      },
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "startLine": 183,
+        "endLine": 362,
+        "evidence": "async function finalizeResumedTurn({ req, client, job, streamId, conversationId, addTitle }) {\n  const userId = req.user.id;\n  const checkpointerCfg = req.config?.endpoints?.[EModelEndpoint.agents]?.checkpointer;\n  const meta = job.metadata ?? {};\n  const userMessage = meta.userMessage;\n  // The response hangs off the user message; the *user* message's own parent decides\n  // whether this is the first turn of the conversation (title eligibility).\n  const parentMessageId = userMessage?.messageId ?? Constants.NO_PARENT;\n  const isFirstTurn = (userMessage?.parentMessageId ?? Constants.NO_PARENT) === Constants.NO_PARENT;\n  const responseMessageId = meta.responseMessageId ?? `${userMessage?.messageId ?? 'resumed'}_`;\n  // Sourced from the paused job (persisted at creation), not the resume body — a\n  // temporary chat must stay temporary on resume so its messages aren't persisted.",
+        "reason": "The code handles some aspects of error handling and resilience, such as checking for job replacement and skipping finalization if the job has been replaced. However, it does not implement comprehensive technical and organizational measures to ensure robustness against errors, faults or inconsistencies."
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code includes basic error handling, but it does not provide robustness against errors, faults or inconsistencies. It lacks comprehensive measures such as retries, fallbacks, and detailed logging for diagnosing issues."
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "startLine": 158,
+        "endLine": 876,
+        "evidence": "const OpenAIChatCompletionController = async (req, res) => {\n  const appConfig = req.config;\n  const requestStartTime = Date.now();\n\n  const validation = validateRequest(req.body);\n  if (isChatCompletionValidationFailure(validation)) {\n    return sendErrorResponse(res, 400, validation.error);\n  }\n\n  const request = validation.request;\n  const agentId = request.model;\n",
+        "reason": "The code includes basic error handling and validation, but it lacks comprehensive measures to ensure resilience against errors, faults or inconsistencies. It does not include advanced techniques such as retries, fallback mechanisms, or robust logging for all potential failure points."
+      },
+      {
+        "file": "api/server/controllers/agents/responses.js",
+        "startLine": 292,
+        "endLine": 1071,
+        "evidence": "const createResponse = async (req, res) => {\n  const appConfig = req.config;\n  const requestStartTime = Date.now();\n\n  // Validate request\n  const validation = validateResponseRequest(req.body);\n  if (isValidationFailure(validation)) {\n    return sendResponsesErrorResponse(res, 400, validation.error);\n  }\n\n  const request = validation.request;\n  const agentId = request.model;",
+        "reason": "The code includes basic error handling and validation, but it lacks comprehensive measures to ensure resilience against errors, faults or inconsistencies. It does not include advanced techniques such as retries, fallbacks, or circuit breakers."
+      },
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "startLine": 384,
+        "endLine": 698,
+        "evidence": "const ResumeAgentController = async (req, res, next, initializeClient, addTitle) => {\n  const userId = req.user.id;\n  const { conversationId, actionId } = req.body;\n  const streamId = conversationId;\n\n  if (!streamId || streamId === 'new') {\n    return res.status(400).json({ error: 'conversationId is required to resume' });\n  }\n\n  const job = await GenerationJobManager.getJob(streamId);\n  if (!job) {\n    return res.status(404).json({ error: 'No paused generation for this conversation' });",
+        "reason": "The code implements checks for `agent_id` and `endpoint` to ensure they match the paused job. However, it does not provide technical or organizational measures to ensure resilience against errors, faults, or inconsistencies."
+      }
+    ],
+    "summary": "10 relevant site(s); 0 gap, 10 partial, 0 compliant. Overall: partial.",
+    "id": "F-017"
+  },
+  {
+    "obligationId": "OB-015-3",
+    "status": "partial",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "startLine": 183,
+        "endLine": 362,
+        "evidence": "async function finalizeResumedTurn({ req, client, job, streamId, conversationId, addTitle }) {\n  const userId = req.user.id;\n  const checkpointerCfg = req.config?.endpoints?.[EModelEndpoint.agents]?.checkpointer;\n  const meta = job.metadata ?? {};\n  const userMessage = meta.userMessage;\n  // The response hangs off the user message; the *user* message's own parent decides\n  // whether this is the first turn of the conversation (title eligibility).\n  const parentMessageId = userMessage?.messageId ?? Constants.NO_PARENT;\n  const isFirstTurn = (userMessage?.parentMessageId ?? Constants.NO_PARENT) === Constants.NO_PARENT;\n  const responseMessageId = meta.responseMessageId ?? `${userMessage?.messageId ?? 'resumed'}_`;\n  // Sourced from the paused job (persisted at creation), not the resume body — a\n  // temporary chat must stay temporary on resume so its messages aren't persisted.",
+        "reason": "The code does not implement technical solutions to ensure cybersecurity that are appropriate to the relevant circumstances and risks. It lacks measures such as authentication, authorization, encryption, or access controls."
+      },
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "startLine": 384,
+        "endLine": 698,
+        "evidence": "const ResumeAgentController = async (req, res, next, initializeClient, addTitle) => {\n  const userId = req.user.id;\n  const { conversationId, actionId } = req.body;\n  const streamId = conversationId;\n\n  if (!streamId || streamId === 'new') {\n    return res.status(400).json({ error: 'conversationId is required to resume' });\n  }\n\n  const job = await GenerationJobManager.getJob(streamId);\n  if (!job) {\n    return res.status(404).json({ error: 'No paused generation for this conversation' });",
+        "reason": "The code checks for unauthorized alterations of use and outputs by verifying that the user ID matches the one in the paused job, ensuring the agent ID and endpoint match those from the paused job, and checking if the action ID is valid. However, it does not provide technical solutions to ensure cybersecurity that are appropriate to the relevant circumstances and risks."
+      }
+    ],
+    "summary": "2 relevant site(s); 0 gap, 2 partial, 0 compliant. Overall: partial.",
+    "id": "F-018"
+  },
+  {
+    "obligationId": "OB-026-1",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any mechanism for assigning human oversight to natural persons who have the necessary competence, training and authority, as well as the necessary support."
+      }
+    ],
+    "summary": "1 relevant site(s); 1 gap, 0 partial, 0 compliant. Overall: gap.",
+    "id": "F-019"
+  },
+  {
+    "id": "F-020",
+    "obligationId": "OB-026-2",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any monitoring or logging of the AI system operation. It also lacks any mechanism to inform providers in accordance with Article 72."
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "startLine": 158,
+        "endLine": 876,
+        "evidence": "const OpenAIChatCompletionController = async (req, res) => {\n  const appConfig = req.config;\n  const requestStartTime = Date.now();\n\n  const validation = validateRequest(req.body);\n  if (isChatCompletionValidationFailure(validation)) {\n    return sendErrorResponse(res, 400, validation.error);\n  }\n\n  const request = validation.request;\n  const agentId = request.model;\n",
+        "reason": "The code does not include any monitoring or logging of the AI system operation. It only handles incoming requests and processes them."
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "startLine": 37,
+        "endLine": 196,
+        "evidence": "class ModelEndHandler {\n  /**\n   * @param {Array<UsageMetadata>} collectedUsage\n   * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n   *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n   *   events. Used to persist Vertex Gemini 3 thought signatures across DB\n   *   round-trips so resumed conversations don't 400 on the next API call.\n   *   Each `model_end` may emit multiple tool calls (one per LLM cycle in a\n   *   tool-using turn); per-id storage preserves the mapping so each tool\n   *   call's signature can be restored onto the right reconstructed\n   *   AIMessage rather than being concentrated on the last one.\n   *   Optional; when `null`, the handler is a no-op for signatures. Non-Vertex",
+        "reason": "The code location does not include any monitoring or logging of the AI system operation. It only handles event data and usage metadata, but lacks the required functionality to monitor and log the system's operation."
+      }
+    ],
+    "summary": "3 relevant site(s); 3 gap, 0 partial, 0 compliant. Overall: gap."
+  },
+  {
+    "id": "F-021",
+    "obligationId": "OB-026-3",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any logging functionality that would keep logs for at least six months."
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "startLine": 158,
+        "endLine": 876,
+        "evidence": "const OpenAIChatCompletionController = async (req, res) => {\n  const appConfig = req.config;\n  const requestStartTime = Date.now();\n\n  const validation = validateRequest(req.body);\n  if (isChatCompletionValidationFailure(validation)) {\n    return sendErrorResponse(res, 400, validation.error);\n  }\n\n  const request = validation.request;\n  const agentId = request.model;\n",
+        "reason": "The code does not include any logging functionality. There is no evidence of logs being generated or stored for the interactions handled by this controller."
+      }
+    ],
+    "summary": "2 relevant site(s); 2 gap, 0 partial, 0 compliant. Overall: gap."
+  },
+  {
+    "id": "F-022",
+    "obligationId": "OB-050-1",
+    "status": "gap",
+    "confidence": 1,
+    "sites": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "startLine": 189,
+        "endLine": 896,
+        "evidence": "const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n  const {\n    text,\n    isRegenerate,\n    endpointOption,\n    conversationId: reqConversationId,\n    isContinued = false,\n    editedContent = null,\n    parentMessageId = null,\n    overrideParentMessageId = null,\n    responseMessageId: editedResponseMessageId = null,\n  } = req.body;",
+        "reason": "The code does not include any mechanism to inform users that they are interacting with an AI system. The function focuses on handling requests and generating responses, but it lacks the required disclosure."
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "startLine": 60,
+        "endLine": 674,
+        "evidence": "const chatV1 = async (req, res) => {\n  const appConfig = req.config;\n  logger.debug('[/assistants/chat/] req.body', req.body);\n\n  const {\n    text,\n    model,\n    endpoint,\n    files = [],\n    promptPrefix,\n    assistant_id,\n    instructions,",
+        "reason": "The code does not include any mechanism to inform users that they are interacting with an AI system. There is no disclosure field or banner anywhere in the provided code."
+      }
+    ],
+    "summary": "2 relevant site(s); 2 gap, 0 partial, 0 compliant. Overall: gap."
+  },
+  {
+    "id": "F-023",
+    "obligationId": "OB-050-2",
+    "status": "not-applicable",
+    "confidence": 0.3,
+    "sites": [],
+    "summary": "No code surface in scope was judged relevant to Art. 50(2)."
+  },
+  {
+    "id": "F-024",
+    "obligationId": "OB-050-3",
+    "status": "not-applicable",
+    "confidence": 0.3,
+    "sites": [],
+    "summary": "No code surface in scope was judged relevant to Art. 50(4)."
+  }
+]

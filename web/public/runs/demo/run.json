@@ -1,0 +1,28 @@
+{
+  "runId": "demo",
+  "createdAt": "2026-07-02T07:58:58.999Z",
+  "regulation": {
+    "title": "EU AI Act (Regulation (EU) 2024/1689)",
+    "version": "OJ L, 12.7.2024"
+  },
+  "repo": {
+    "name": "LibreChat",
+    "url": "https://github.com/danny-avila/LibreChat",
+    "commit": "8683eccbbce769461caf3a88901657b60c9fde6c",
+    "scope": [
+      "api/server"
+    ]
+  },
+  "model": {
+    "name": "qwen2.5-coder:7b (local via Ollama)"
+  },
+  "stats": {
+    "filesScanned": 267,
+    "chunks": 1139,
+    "obligations": 24,
+    "findings": 24,
+    "gaps": 17,
+    "proposals": 19,
+    "durationSec": 692
+  }
+}

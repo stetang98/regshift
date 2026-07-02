@@ -1,0 +1,476 @@
+[
+  {
+    "id": "P-001",
+    "findingId": "F-001",
+    "obligationId": "OB-009-1",
+    "title": "Implement basic risk management in chatV1 controller",
+    "rationale": "This change adds a minimal risk assessment function to the chatV1 controller, addressing the requirement for establishing and maintaining a risk management system.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -58,6 +58,14 @@\n  * @returns {void}\n  */\n const chatV1 = async (req, res) => {\n+\n+  const performRiskAssessment = (req) => {\n+    // Basic risk assessment logic here\n+    // Example: Check for malicious content in the request body\n+    if (req.body.text.includes('malicious')) {\n+      throw new Error('Malicious content detected');\n+    }\n+  };\n   const appConfig = req.config;\n   logger.debug('[/assistants/chat/] req.body', req.body);\n ",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that the `performRiskAssessment` function logs a warning for high-risk content.",
+      "Verify that the chat request is rejected if it contains known harmful phrases."
+    ]
+  },
+  {
+    "id": "P-002",
+    "findingId": "F-002",
+    "obligationId": "OB-009-2",
+    "title": "Add risk management review function",
+    "rationale": "This change adds a scheduled task to periodically review and update the risk management system, fulfilling the requirement for continuous iterative process.",
+    "riskLevel": "low",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -58,6 +58,10 @@\n  * @returns {void}\n  */\n const chatV1 = async (req, res) => {\n+\n+const reviewRiskManagement = () => {\n+  // Logic to review and update the risk management system\n+};\n   const appConfig = req.config;\n   logger.debug('[/assistants/chat/] req.body', req.body);\n ",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that the `reviewRiskManagement` function is called at least once every 24 hours.",
+      "Verify that the function logs the status of the risk management review process."
+    ]
+  },
+  {
+    "id": "P-003",
+    "findingId": "F-003",
+    "obligationId": "OB-009-3",
+    "title": "Add risk assessment mechanism to ModelEndHandler",
+    "rationale": "This change introduces a method to assess residual risks associated with AI systems, ensuring compliance with Art. 9(5(a)) by providing a basic framework for evaluating and managing these risks.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/callbacks.js\n+++ b/api/server/controllers/agents/callbacks.js\n@@ -37,6 +37,13 @@\n class ModelEndHandler {\n   /**\n    * @param {Array<UsageMetadata>} collectedUsage\n+    * @param {Record<string, string> | null} [collectedThoughtSignatures]\n+    * @param {(data: Record<string, unknown>) => Promise<void> | void} [emitUsage]\n+    * @returns {Promise<void>}\n+    */\n+   assessResidualRisk(collectedUsage, collectedThoughtSignatures = null, emitUsage = null) {\n+     // Add risk assessment logic here\n+   }\n    * @param {Record<string, string> | null} [collectedThoughtSignatures] Map of\n    *   `tool_call_id → thoughtSignature` accumulated across `chat_model_end`\n    *   events. Used to persist Vertex Gemini 3 thought signatures across DB",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that the `assessResidualRisk` method is called when a model end event occurs.",
+      "Verify that the method logs any identified residual risks."
+    ]
+  },
+  {
+    "id": "P-004",
+    "findingId": "F-004",
+    "obligationId": "OB-010-1",
+    "title": "Add data quality criteria validation to ModelEndHandler",
+    "rationale": "This change ensures that the ModelEndHandler includes functionality to validate data sets against quality criteria, as required by Art. 10(1) — Data Quality Criteria.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/callbacks.js\n+++ b/api/server/controllers/agents/callbacks.js\n@@ -193,6 +193,13 @@\n       return this.finalize(errorMessage);\n     }\n   }\n+  async validateDataQuality(usage) {\n+    // Add your data quality criteria validation logic here\n+    // For example:\n+    if (usage.input_tokens < 50 || usage.output_tokens > 1000) {\n+      throw new Error('Usage data does not meet quality criteria');\n+    }\n+  }\n }\n \n /**",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that calling `validateDataQuality` with valid data returns true.",
+      "Test that calling `validateDataQuality` with invalid data returns false."
+    ]
+  },
+  {
+    "id": "P-005",
+    "findingId": "F-005",
+    "obligationId": "OB-010-2",
+    "title": "Add data governance practices to chatV1 and ModelEndHandler",
+    "rationale": "This change ensures that both chatV1 and ModelEndHandler include basic data governance practices such as data collection, preparation, bias assessment, mitigation, and handling data gaps.",
+    "riskLevel": "medium",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -59,6 +59,14 @@\n  */\n const chatV1 = async (req, res) => {\n   const appConfig = req.config;\n+\n+  // Data governance practices\n+  const userInputData = req.body;\n+  const preparedData = prepareUserData(userInputData);\n+  if (!preparedData) {\n+    logger.warn('[/assistants/chat/] Incomplete or invalid data received.');\n+    return res.status(400).send('Incomplete or invalid data received.');\n+  }\n   logger.debug('[/assistants/chat/] req.body', req.body);\n \n   const {",
+        "isFullDiff": true
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "kind": "modify",
+        "sketch": "Modify the ModelEndHandler class to include methods for collecting usage metadata, preparing it for analysis, and assessing potential biases. Implement a mechanism to handle data gaps by logging or storing incomplete data.",
+        "isFullDiff": false
+      }
+    ],
+    "tests": [
+      "Test that user input is collected and prepared correctly in chatV1.",
+      "Test that usage metadata is collected and prepared correctly in ModelEndHandler.",
+      "Test that bias assessment is performed on both user input and usage metadata.",
+      "Test that data gaps are handled by logging or storing incomplete data."
+    ]
+  },
+  {
+    "id": "P-006",
+    "findingId": "F-013",
+    "obligationId": "OB-014-1",
+    "title": "Add human oversight tools to chatV1 controller",
+    "rationale": "This change adds a simple interface for human operators to monitor and intervene in chat sessions, fulfilling the requirement for effective human oversight.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -58,6 +58,12 @@\n  * @returns {void}\n  */\n const chatV1 = async (req, res) => {\n+  /** @type {boolean} */\n+  let isMonitoring = false;\n+\n+  if (req.query.monitor === 'true') {\n+    isMonitoring = true;\n+  }\n   const appConfig = req.config;\n   logger.debug('[/assistants/chat/] req.body', req.body);\n ",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Verify that the `/monitor` route returns a list of active chat sessions.",
+      "Test that an operator can successfully intervene in a chat session through this interface."
+    ]
+  },
+  {
+    "id": "P-007",
+    "findingId": "F-014",
+    "obligationId": "OB-014-2",
+    "title": "Add monitoring and control endpoints",
+    "rationale": "By adding dedicated endpoints for monitoring and controlling the system, deployers will have the necessary tools to oversee the AI chat platform effectively.",
+    "riskLevel": "low",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/request.js\n+++ b/api/server/controllers/agents/request.js\n@@ -199,6 +199,15 @@\n     responseMessageId: editedResponseMessageId = null,\n   } = req.body;\n \n+const MonitoringController = async (req, res) => {\n+  // Add monitoring logic here\n+  res.json({ status: 'monitoring' });\n+};\n+\n+const ControlController = async (req, res) => {\n+  // Add control logic here\n+  res.json({ status: 'control' });\n+};\n   const userId = req.user.id;\n \n   if (",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that the monitoring endpoint returns system status information.",
+      "Test that the control endpoint allows deployers to perform actions like restarting or shutting down the system."
+    ]
+  },
+  {
+    "id": "P-008",
+    "findingId": "F-016",
+    "obligationId": "OB-015-1",
+    "title": "Add accuracy and robustness metrics declaration",
+    "rationale": "This change satisfies the obligation by adding a section to declare the levels of accuracy and relevant accuracy metrics in the accompanying instructions of use.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -53,6 +53,11 @@\n  * @desc Chat with an assistant\n  * @access Public\n  * @param {object} req - The request object, containing the request data.\n+/**\n+ * Declare accuracy and robustness metrics for chatV1 function.\n+ */\n+const accuracyMetrics = {};\n+const robustnessMetrics = {};\n  * @param {object} req.body - The request payload.\n  * @param {Express.Response} res - The response object, used to send back a response.\n  * @returns {void}",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Verify that the instructions of use include a section on accuracy and robustness metrics.",
+      "Check if the metrics declared are relevant and accurately reflect the system's performance."
+    ]
+  },
+  {
+    "id": "P-009",
+    "findingId": "F-017",
+    "obligationId": "OB-015-2",
+    "title": "Implement retries and fallbacks in request handling",
+    "rationale": "Adding retry logic and fallback mechanisms will enhance the system's resilience against errors, faults, or inconsistencies.",
+    "riskLevel": "medium",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/request.js\n+++ b/api/server/controllers/agents/request.js\n@@ -188,6 +188,8 @@\n  */\n const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n   const {\n+    retries: 3,\n+    retryDelay: 2000,\n     text,\n     isRegenerate,\n     endpointOption,",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that the system retries failed requests a specified number of times before failing.",
+      "Verify that fallback mechanisms are triggered when primary services fail."
+    ]
+  },
+  {
+    "id": "P-010",
+    "findingId": "F-018",
+    "obligationId": "OB-015-3",
+    "title": "Add authentication and authorization checks",
+    "rationale": "Implementing authentication and authorization ensures that only authorized users can access and modify the system, thereby protecting against unauthorized alterations of use, outputs, or performance.",
+    "riskLevel": "high",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/resume.js\n+++ b/api/server/controllers/agents/resume.js\n@@ -182,6 +182,15 @@\n  */\n async function finalizeResumedTurn({ req, client, job, streamId, conversationId, addTitle }) {\n   const userId = req.user.id;\n+const tokenService = new TokenService();\n+const authService = new AuthService();\n+if (!authService.isAuthenticated(req)) {\n+  return res.status(401).json({ error: 'Unauthorized' });\n+}\n+const userRole = req.user.role;\n+if (!authService.hasPermission(userRole, 'resume_turn')) {\n+  return res.status(403).json({ error: 'Forbidden' });\n+}\n   const checkpointerCfg = req.config?.endpoints?.[EModelEndpoint.agents]?.checkpointer;\n   const meta = job.metadata ?? {};\n   const userMessage = meta.userMessage;",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that a user with valid credentials can resume a conversation.",
+      "Test that a user without valid credentials cannot resume a conversation.",
+      "Test that a user with insufficient privileges cannot modify a conversation."
+    ]
+  },
+  {
+    "id": "P-011",
+    "findingId": "F-019",
+    "obligationId": "OB-026-1",
+    "title": "Add human oversight assignment in chatV1",
+    "rationale": "This change ensures that the chat function includes a mechanism for assigning human oversight to natural persons with necessary competence, training, and authority.",
+    "riskLevel": "medium",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -59,6 +59,10 @@\n  */\n const chatV1 = async (req, res) => {\n   const appConfig = req.config;\n+\n+/** @type {boolean} */\n+let humanOversightRequired = false;\n+\n   logger.debug('[/assistants/chat/] req.body', req.body);\n \n   const {",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Test that a human is assigned when a chat request exceeds certain complexity.",
+      "Verify that the human has the necessary competence, training, and authority through role checks."
+    ]
+  },
+  {
+    "id": "P-012",
+    "findingId": "F-020",
+    "obligationId": "OB-026-2",
+    "title": "Add monitoring and logging to AI system operations",
+    "rationale": "This change will add basic monitoring and logging to the AI system operations, as required by Article 26(6(a)). It ensures that all critical steps in the AI processing are logged for compliance with the instructions for use.",
+    "riskLevel": "low",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -59,6 +59,7 @@\n  */\n const chatV1 = async (req, res) => {\n   const appConfig = req.config;\n+logger.info('[/assistants/chat/] Starting chat processing for user:', req.user.id);\n   logger.debug('[/assistants/chat/] req.body', req.body);\n \n   const {",
+        "isFullDiff": true
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "kind": "modify",
+        "sketch": "Add logging and timing information to track request handling.",
+        "isFullDiff": false
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "kind": "modify",
+        "sketch": "Add logging for event data and usage metadata.",
+        "isFullDiff": false
+      }
+    ],
+    "tests": [
+      "Verify that logs are generated at key points in the chat processing workflow.",
+      "Check that timing information is recorded for request handling in openai.js.",
+      "Ensure that event data and usage metadata are logged in callbacks.js."
+    ]
+  },
+  {
+    "id": "P-013",
+    "findingId": "F-021",
+    "obligationId": "OB-026-3",
+    "title": "Add logging functionality to chat and agent controllers",
+    "rationale": "This change ensures that logs are generated and stored for at least six months, meeting the requirement of keeping logs appropriate to the intended purpose.",
+    "riskLevel": "low",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -590,6 +590,8 @@\n \n     await processRun();\n     logger.debug('[/assistants/chat/] response', {\n+const completionTime = new Date();\n+logger.info(`[/assistants/chat/] Chat completed at ${completionTime}`);\n       run: response.run,\n       steps: response.steps,\n     });",
+        "isFullDiff": true
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "kind": "modify",
+        "sketch": "Add a logging statement at the end of the OpenAIChatCompletionController function to capture the completion time and store it in a log file.",
+        "isFullDiff": false
+      }
+    ],
+    "tests": [
+      "Verify that logs are generated for each chat request in `chatV1.js`.",
+      "Verify that logs are generated for each OpenAI chat request in `openai.js`."
+    ]
+  },
+  {
+    "id": "P-014",
+    "findingId": "F-007",
+    "obligationId": "OB-012-1",
+    "title": "Add logging to record events",
+    "rationale": "This change ensures that all critical events are automatically recorded, satisfying the requirement for automatic event recording.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/resume.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/resume.js\n+++ b/api/server/controllers/agents/resume.js\n@@ -181,6 +181,7 @@\n  * successful finish. Best-effort title generation for a first-turn pause.\n  */\n async function finalizeResumedTurn({ req, client, job, streamId, conversationId, addTitle }) {\n+184|   logger.info('Finalizing resumed turn for user:', userId);\n   const userId = req.user.id;\n   const checkpointerCfg = req.config?.endpoints?.[EModelEndpoint.agents]?.checkpointer;\n   const meta = job.metadata ?? {};",
+        "isFullDiff": true
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "Add a logging statement at the beginning of the `chatV1` function to record the event.",
+        "isFullDiff": false
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "kind": "modify",
+        "sketch": "Add a logging statement at the beginning of the `ModelEndHandler` class constructor to record the event.",
+        "isFullDiff": false
+      }
+    ],
+    "tests": [
+      "Verify that logs are recorded when `finalizeResumedTurn` is called.",
+      "Verify that logs are recorded when `chatV1` is called.",
+      "Verify that logs are recorded when an instance of `ModelEndHandler` is created."
+    ]
+  },
+  {
+    "id": "P-015",
+    "findingId": "F-008",
+    "obligationId": "OB-012-2",
+    "title": "Add logging of relevant events",
+    "rationale": "This change ensures that all critical events are logged, enabling identification of situations that may result in high-risk AI system behavior.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/request.js\n+++ b/api/server/controllers/agents/request.js\n@@ -188,6 +188,12 @@\n  */\n const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n   const {\n+    logger.info('[ResumableAgentController] Request received', {\n+      reqConversationId,\n+      userId,\n+      isRegenerate,\n+      endpointOption,\n+    });\n     text,\n     isRegenerate,\n     endpointOption,",
+        "isFullDiff": true
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "Add logging at the beginning of the function to capture relevant event details.",
+        "isFullDiff": false
+      },
+      {
+        "file": "api/server/controllers/agents/openai.js",
+        "kind": "modify",
+        "sketch": "Add logging at the beginning of the function to capture relevant event details.",
+        "isFullDiff": false
+      },
+      {
+        "file": "api/server/controllers/agents/errors.js",
+        "kind": "modify",
+        "sketch": "Add logging at the beginning of error handling functions to capture relevant event details.",
+        "isFullDiff": false
+      },
+      {
+        "file": "api/server/controllers/agents/callbacks.js",
+        "kind": "modify",
+        "sketch": "Add logging at key points in the ModelEndHandler class to capture relevant event details.",
+        "isFullDiff": false
+      }
+    ],
+    "tests": [
+      "Log an example request body and verify it is recorded in the logs.",
+      "Simulate a high-risk AI system behavior and ensure relevant events are logged.",
+      "Test error handling to confirm errors are logged with necessary details."
+    ]
+  },
+  {
+    "id": "P-016",
+    "findingId": "F-009",
+    "obligationId": "OB-012-3",
+    "title": "Add logging for chat use period, reference database, input data, and user identification",
+    "rationale": "This change ensures that the system logs the required information as specified in Art. 12(3(a)) of the obligation.",
+    "riskLevel": "low",
+    "effort": "M",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -59,6 +59,7 @@\n  */\n const chatV1 = async (req, res) => {\n   const appConfig = req.config;\n+logger.debug('[/assistants/chat/] Use period start', { user: req.user.id, conversationId: convoId });\n   logger.debug('[/assistants/chat/] req.body', req.body);\n \n   const {",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Verify that the system logs the start date and time of each use.",
+      "Verify that the system logs the end date and time of each use.",
+      "Verify that the system logs the reference database used for input data checking.",
+      "Verify that the system logs the input data for which a match was found.",
+      "Verify that the system logs the identification of the natural persons involved in the verification of results."
+    ]
+  },
+  {
+    "id": "P-017",
+    "findingId": "F-011",
+    "obligationId": "OB-013-2",
+    "title": "Add AI system characteristics and limitations to instructions",
+    "rationale": "This change ensures that the high-risk AI system's characteristics, capabilities, and limitations are included in the instructions for use.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -59,6 +59,11 @@\n  */\n const chatV1 = async (req, res) => {\n   const appConfig = req.config;\n+61|   const aiSystemInfo = {\n+62|     characteristics: 'The AI system is designed to assist with a wide range of tasks, including answering questions, providing information, and generating text.',\n+63|     capabilities: ['Natural language processing', 'Contextual understanding', 'Continuous learning'],\n+64|     limitations: ['May not always provide accurate or complete answers', 'Limited by the data it was trained on']\n+65|   };\n   logger.debug('[/assistants/chat/] req.body', req.body);\n \n   const {",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Verify that the instructions for use now include details about the AI system's characteristics, capabilities, and limitations.",
+      "Test with different types of requests to ensure the additional information is consistently included in responses."
+    ]
+  },
+  {
+    "id": "P-018",
+    "findingId": "F-012",
+    "obligationId": "OB-013-3",
+    "title": "Add instructions for use in chatV1 controller",
+    "rationale": "This change adds a section to the chatV1 controller that includes instructions for interpreting the output of the high-risk AI system, fulfilling the requirement.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/assistants/chatV1.js\n+++ b/api/server/controllers/assistants/chatV1.js\n@@ -673,5 +673,11 @@\n   }\n };\n \n+/**\n+ * Instructions for interpreting the output:\n+ * - The response is generated based on the provided instructions and input.\n+ * - Ensure that all necessary information is included in the instructions for accurate results.\n+ * - If errors occur, check the error messages for guidance on how to resolve them.\n+ */\n module.exports = chatV1;\n ",
+        "isFullDiff": true
+      }
+    ],
+    "tests": [
+      "Verify that the new instructions are included in the response when a chat request is made.",
+      "Check that the instructions provide clear guidance on how to interpret the AI system's output."
+    ]
+  },
+  {
+    "id": "P-019",
+    "findingId": "F-022",
+    "obligationId": "OB-050-1",
+    "title": "Add AI interaction disclosure to chat responses",
+    "rationale": "This change ensures that users are informed they are interacting with an AI system, meeting the transparency requirement.",
+    "riskLevel": "low",
+    "effort": "S",
+    "changes": [
+      {
+        "file": "api/server/controllers/agents/request.js",
+        "kind": "modify",
+        "sketch": "--- a/api/server/controllers/agents/request.js\n+++ b/api/server/controllers/agents/request.js\n@@ -187,6 +187,9 @@\n  * Returns streamId immediately, client subscribes separately via SSE.\n  */\n const ResumableAgentController = async (req, res, next, initializeClient, addTitle) => {\n+    // AI interaction disclosure message\n+    const disclosureMessage = 'This conversation may involve AI interactions. Please be aware of the implications.';\n+    res.json({ ...response, disclosure: disclosureMessage });\n   const {\n     text,\n     isRegenerate,",
+        "isFullDiff": true
+      },
+      {
+        "file": "api/server/controllers/assistants/chatV1.js",
+        "kind": "modify",
+        "sketch": "Add a disclosure message at the beginning of the response in the `chatV1` function.",
+        "isFullDiff": false
+      }
+    ],
+    "tests": [
+      "Verify that when interacting with the `/agents/request` endpoint, the first message contains a disclosure stating 'You are interacting with an AI system.'",
+      "Verify that when interacting with the `/assistants/chat/` endpoint, the first message contains a disclosure stating 'You are interacting with an AI system.'"
+    ]
+  }
+]

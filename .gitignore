@@ -1,6 +1,6 @@
 node_modules/
 target/
-runs/
+/pipeline/runs/
 .env
 dist/
 .DS_Store
