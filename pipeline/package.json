@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "pipeline": "tsx src/run.ts",
+    "refine-diffs": "tsx src/refine-diffs.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

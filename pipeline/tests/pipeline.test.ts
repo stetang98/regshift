@@ -60,6 +60,28 @@ describe('parseFrontmatter', () => {
   });
 });
 
+describe('buildInsertionDiff', () => {
+  const lines = ['const a = 1;', 'function send(res) {', '  res.json({ ok: true });', '}', 'module.exports = send;'];
+
+  test('inserts after anchor with correct hunk arithmetic', async () => {
+    const { buildInsertionDiff } = await import('../src/stages/refineDiffs.js');
+    const diff = buildInsertionDiff('api/x.js', lines, 1, 'after', ['  res.set("X-AI-Generated", "true");']);
+    expect(diff).toContain('--- a/api/x.js');
+    expect(diff).toContain('+++ b/api/x.js');
+    expect(diff).toContain('@@ -1,5 +1,6 @@');
+    expect(diff).toContain('+  res.set("X-AI-Generated", "true");');
+    const plus = diff.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++'));
+    expect(plus).toHaveLength(1);
+  });
+
+  test('clamps context at file boundaries', async () => {
+    const { buildInsertionDiff } = await import('../src/stages/refineDiffs.js');
+    const diff = buildInsertionDiff('api/x.js', lines, 4, 'after', ['// audit trail']);
+    expect(diff).toContain('@@ -3,3 +3,4 @@');
+    expect(diff.trim().endsWith('+// audit trail')).toBe(true);
+  });
+});
+
 describe('buildCodemap', () => {
   test('extracts routes, functions and signals from the fixture repo', () => {
     const codemap = buildCodemap(FIXTURE_REPO, ['api/server']);
