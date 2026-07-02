@@ -1,0 +1,119 @@
+/* Audit: traceability matrix + export/print actions. */
+
+.audit-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.audit-progress {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--ink-soft);
+}
+
+.audit-table {
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+}
+
+.audit-table td {
+  border-right: 1px solid var(--hairline);
+}
+
+.audit-table td:last-child {
+  border-right: none;
+}
+
+.audit-ob-cell {
+  min-width: 15rem;
+  background: var(--paper);
+}
+
+.audit-ob-refline {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.audit-ob-title {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: var(--text-sm);
+  margin-top: var(--space-1);
+}
+
+.audit-ob-id {
+  font-size: var(--text-2xs);
+  color: var(--ink-faint);
+}
+
+.audit-finding-cell {
+  white-space: nowrap;
+}
+
+.audit-finding-cell code {
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.audit-proposal-cell {
+  max-width: 24rem;
+}
+
+.audit-proposal-cell a {
+  text-decoration: none;
+  border-bottom: 1px solid var(--hairline-strong);
+}
+
+.audit-proposal-cell a:hover {
+  border-color: var(--accent);
+}
+
+.audit-proposal-cell code {
+  color: var(--accent-deep);
+  font-size: var(--text-xs);
+  margin-right: 3px;
+}
+
+.unaddressed {
+  color: var(--tone-gap);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.audit-comment {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+  font-style: italic;
+  max-width: 18rem;
+}
+
+.audit-time-cell {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  white-space: nowrap;
+}
+
+.audit-orphans {
+  margin-top: var(--space-4);
+  border-color: var(--tone-partial);
+}
+
+.audit-method {
+  margin-top: var(--space-5);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  max-width: var(--measure);
+}
+
+@media (max-width: 900px) {
+  .audit-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

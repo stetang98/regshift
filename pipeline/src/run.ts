@@ -41,7 +41,7 @@ async function main(): Promise<void> {
 
   let obligations: Obligation[];
   if (stage('parse') && fresh('obligations.json')) {
-    obligations = await parseRegulation(CORPUS);
+    obligations = await parseRegulation(CORPUS, path('obligations-partial'));
     writeJson(path('obligations.json'), obligations);
     console.log(`✓ parse-reg: ${obligations.length} obligations`);
   } else {

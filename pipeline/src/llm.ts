@@ -12,6 +12,10 @@ const BASE_URL = process.env.LLM_BASE_URL ?? 'http://localhost:11434';
 const MODEL = process.env.LLM_MODEL ?? 'qwen2.5-coder:7b';
 const API_KEY = process.env.LLM_API_KEY ?? '';
 const NUM_CTX = Number(process.env.LLM_NUM_CTX ?? 12288);
+// Ollama defaults num_predict to 128, which silently truncates structured
+// output — under JSON grammar the model "legally" closes objects early and
+// drops required fields. Always set an explicit generous budget.
+const NUM_PREDICT = Number(process.env.LLM_NUM_PREDICT ?? 2048);
 const MAX_ATTEMPTS = 3;
 
 export interface ChatMessage {
@@ -35,7 +39,7 @@ async function chatOllama(messages: ChatMessage[], json: boolean): Promise<strin
       messages,
       stream: false,
       ...(json ? { format: 'json' } : {}),
-      options: { temperature: 0.1, num_ctx: NUM_CTX },
+      options: { temperature: 0.1, num_ctx: NUM_CTX, num_predict: NUM_PREDICT },
     }),
   });
   if (!res.ok) throw new Error(`ollama ${res.status}: ${(await res.text()).slice(0, 300)}`);

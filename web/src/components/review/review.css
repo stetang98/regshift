@@ -1,0 +1,118 @@
+/* Review queue: filterable, keyboard-friendly decision table. */
+
+.review-progress {
+  margin-top: var(--space-3);
+  max-width: 30rem;
+}
+
+.filter-bar {
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--hairline-strong);
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: var(--space-4);
+}
+
+.filter-group .section-label {
+  margin-bottom: var(--space-1);
+}
+
+.filter-chips {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper-raised);
+  border-radius: var(--radius-1);
+  font-size: var(--text-xs);
+  padding: 3px 9px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.filter-chip:hover {
+  border-color: var(--ink-soft);
+}
+
+.filter-chip.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.chip-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  opacity: 0.75;
+  margin-left: 2px;
+}
+
+/* table */
+
+.review-table {
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+}
+
+.review-row {
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.review-row:hover {
+  background: var(--paper-inset);
+}
+
+.review-row:focus-within {
+  background: var(--accent-wash);
+}
+
+.review-row-link {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--accent-deep);
+}
+
+.review-title-cell {
+  max-width: 26rem;
+}
+
+.review-decided-cell {
+  font-size: var(--text-2xs);
+  white-space: nowrap;
+}
+
+.review-empty {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  padding: var(--space-5) !important;
+}
+
+.kbd-hint {
+  margin-top: var(--space-2);
+  font-size: var(--text-2xs);
+  color: var(--ink-faint);
+}
+
+.kbd-hint kbd {
+  border: 1px solid var(--hairline-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-1);
+  padding: 0 4px;
+  font-size: 0.625rem;
+  background: var(--paper-raised);
+}
+
+@media (max-width: 900px) {
+  .review-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

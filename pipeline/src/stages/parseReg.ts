@@ -1,12 +1,11 @@
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { jsonCall } from '../llm.js';
-import { parseFrontmatter } from '../io.js';
+import { exists, parseFrontmatter, readJson, writeJson } from '../io.js';
 import { ObligationDraftSchema, type Obligation } from '../types.js';
 
-const ExtractionSchema = z.object({ obligations: z.array(ObligationDraftSchema).min(1).max(4) });
+const ExtractionSchema = z.object({ obligations: z.array(ObligationDraftSchema).min(1).max(3) });
 
 const SYSTEM = `You are a senior regulatory analyst preparing an engineering compliance workplan.
 From the EU AI Act article provided, extract the 1-3 obligations that are most directly
@@ -23,6 +22,8 @@ Rules:
 - "paragraphRef" is the paragraph number within this article, e.g. "1" or "2(a)".
 - "sourceQuote" must be copied VERBATIM from the article text (max ~40 words).
 - Skip obligations with no plausible code surface (pure organisational duties).
+- At most 3 obligations. Every obligation object MUST contain exactly these keys:
+  "title", "actor", "trigger", "requirement", "severity", "paragraphRef", "sourceQuote".
 Return JSON: {"obligations": [...]}`;
 
 function normalize(s: string): string {
@@ -38,21 +39,39 @@ function paragraphText(body: string, ref: string): string | null {
   return m ? m[1]!.trim() : null;
 }
 
-export async function parseRegulation(corpusDir: string): Promise<Obligation[]> {
+export async function parseRegulation(corpusDir: string, checkpointDir?: string): Promise<Obligation[]> {
   const files = readdirSync(corpusDir)
     .filter((f) => /^art-\d+\.md$/.test(f))
     .sort();
   const obligations: Obligation[] = [];
+  const failed: string[] = [];
   for (const file of files) {
     const { meta, body } = parseFrontmatter(readFileSync(join(corpusDir, file), 'utf8'));
-    const articleNumber = meta['articleNumber'] ?? file.replace(/\D/g, '');
+    const articleNumber = (meta['articleNumber'] ?? file.replace(/\D/g, '')).replace(/^0+/, '');
     const title = meta['title'] ?? '';
+
+    // Per-article checkpoint: a failed article never costs completed ones.
+    const ckpt = checkpointDir ? join(checkpointDir, file.replace('.md', '.json')) : null;
+    if (ckpt && exists(ckpt)) {
+      obligations.push(...readJson<Obligation[]>(ckpt));
+      console.log(`  parse-reg: Article ${articleNumber} — reused checkpoint`);
+      continue;
+    }
+
     console.log(`  parse-reg: Article ${articleNumber} — ${title}`);
-    const { obligations: drafts } = await jsonCall(
-      ExtractionSchema,
-      SYSTEM,
-      `Article ${articleNumber} — ${title}\n\n${body}`,
-    );
+    let drafts;
+    try {
+      ({ obligations: drafts } = await jsonCall(
+        ExtractionSchema,
+        SYSTEM,
+        `Article ${articleNumber} — ${title}\n\n${body}`,
+      ));
+    } catch (err) {
+      failed.push(`Article ${articleNumber}: ${(err as Error).message.slice(0, 160)}`);
+      console.warn(`    ! Article ${articleNumber} extraction failed — skipped for this run`);
+      continue;
+    }
+    const articleObligations: Obligation[] = [];
     drafts.forEach((d, i) => {
       // Keep quotes honest: if the model's "verbatim" quote is not in the text,
       // fall back to the opening of the referenced paragraph.
@@ -61,7 +80,7 @@ export async function parseRegulation(corpusDir: string): Promise<Obligation[]> 
         const para = paragraphText(body, d.paragraphRef);
         quote = para ? para.slice(0, 240) : quote;
       }
-      obligations.push({
+      articleObligations.push({
         id: `OB-${articleNumber.padStart(3, '0')}-${i + 1}`,
         articleRef: `Art. ${articleNumber}(${d.paragraphRef})`,
         title: d.title,
@@ -73,6 +92,11 @@ export async function parseRegulation(corpusDir: string): Promise<Obligation[]> 
         sourceUrl: meta['sourceUrl'] ?? '',
       });
     });
+    if (ckpt) writeJson(ckpt, articleObligations);
+    obligations.push(...articleObligations);
+  }
+  if (failed.length > 0) {
+    console.warn(`  parse-reg: ${failed.length} article(s) failed — rerun to retry:\n    ${failed.join('\n    ')}`);
   }
   return obligations;
 }
