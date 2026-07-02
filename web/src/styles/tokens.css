@@ -1,0 +1,95 @@
+/* RegShift design tokens — "regulatory paper × precision terminal".
+   Light paper surface, near-black ink, one oxide-red accent used semantically.
+   Status palette validated for CVD separation + contrast on the paper surface. */
+
+:root {
+  /* paper & ink */
+  --paper: #faf8f2;
+  --paper-raised: #fffdf7;
+  --paper-inset: #f1ede1;
+  --paper-deep: #e9e4d5;
+  --ink: #1c1914;
+  --ink-soft: #4c463b;
+  --ink-faint: #7d7565;
+  --hairline: #ddd6c6;
+  --hairline-strong: #b9b09b;
+  --rule-ink: #2a261f;
+
+  /* accent — deep oxide red, used semantically (primary action, active nav, seals) */
+  --accent: #9c3116;
+  --accent-deep: #7c2711;
+  --accent-wash: #f3e2da;
+
+  /* status: findings */
+  --tone-gap: #9e2b25;
+  --tone-gap-wash: #f5e0dd;
+  --tone-partial: #8a5a00;
+  --tone-partial-wash: #f3e7cb;
+  --tone-compliant: #067647;
+  --tone-compliant-wash: #ddede1;
+  --tone-na: #6b6455;
+  --tone-na-wash: #eae6da;
+
+  /* severity low gets a cool slate so it never reads as "not applicable" */
+  --tone-low: #47566b;
+  --tone-low-wash: #e3e7ec;
+
+  /* decisions map onto the same semantic families */
+  --tone-approved: var(--tone-compliant);
+  --tone-approved-wash: var(--tone-compliant-wash);
+  --tone-rejected: var(--tone-gap);
+  --tone-rejected-wash: var(--tone-gap-wash);
+  --tone-needs-work: var(--tone-partial);
+  --tone-needs-work-wash: var(--tone-partial-wash);
+  --tone-pending: var(--tone-na);
+  --tone-pending-wash: var(--tone-na-wash);
+
+  /* diff rendering */
+  --diff-add-bg: #e3efdb;
+  --diff-add-ink: #274e13;
+  --diff-del-bg: #f6dfdc;
+  --diff-del-ink: #7c221c;
+  --diff-hunk-bg: #ece7d8;
+  --diff-hunk-ink: #6b6455;
+  --diff-meta-ink: #7d7565;
+
+  /* type */
+  --font-display: 'Fraunces Variable', Fraunces, Georgia, 'Times New Roman', serif;
+  --font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.84375rem;
+  --text-base: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.375rem;
+  --text-xl: clamp(1.55rem, 1.25rem + 1.2vw, 2.05rem);
+  --text-display: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
+
+  --track-caps: 0.13em;
+  --leading-tight: 1.15;
+  --leading-body: 1.62;
+
+  /* space & shape */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.25rem;
+  --space-7: 3.25rem;
+  --space-8: 4.5rem;
+  --measure: 66ch;
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --shell-max: 1180px;
+
+  /* motion — compositor-friendly properties only */
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* paper grain, kept below perception threshold */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
