@@ -6,7 +6,7 @@
 
 Built for **UK AI Agent Hackathon EP5 × Conduct** (Conduct Track: *Make Legacy Move*).
 
-**Live console:** [regshift.vercel.app](https://regshift.vercel.app) · **Demo video:** `<VIDEO_URL>` · Apache-2.0
+**Live console:** [regshift.vercel.app](https://regshift.vercel.app) · **Demo video:** [youtu.be/NgXEkE0xbyY](https://youtu.be/NgXEkE0xbyY) · Apache-2.0
 
 </div>
 

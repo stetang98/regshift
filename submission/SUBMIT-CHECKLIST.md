@@ -18,7 +18,7 @@
 | **Is this an AI Agent project?**（若有此问） | **Yes** |
 | **GitHub** | `https://github.com/stetang98/regshift` |
 | **Website** | `https://regshift.vercel.app` |
-| **Demo video** | `<YOUTUBE_URL>`（视频上传后回填，见文末"待办#2"） |
+| **Demo video** | `https://youtu.be/NgXEkE0xbyY` |
 | **X / Twitter** | `https://x.com/Stetang3438` |
 
 **Vision 粘贴块（244 字符，问题先行）：**
