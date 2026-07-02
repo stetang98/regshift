@@ -38,6 +38,8 @@ code,
 pre,
 kbd {
   font-family: var(--font-mono);
+  /* Never render != as ≠ etc. — quoted code must be copy-exact. */
+  font-variant-ligatures: none;
 }
 
 a {

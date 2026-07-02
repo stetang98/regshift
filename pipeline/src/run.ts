@@ -61,7 +61,7 @@ async function main(): Promise<void> {
 
   let findings: Finding[];
   if (stage('match') && fresh('findings.json')) {
-    findings = await matchObligations(obligations, codemap, REPO_ROOT);
+    findings = await matchObligations(obligations, codemap, REPO_ROOT, path('findings-partial'));
     writeJson(path('findings.json'), findings);
     console.log(`✓ match: ${findings.length} findings, ${findings.filter((f) => f.status === 'gap').length} gaps`);
   } else {

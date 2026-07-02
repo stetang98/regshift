@@ -1,7 +1,7 @@
 import MiniSearch from 'minisearch';
 import { join } from 'node:path';
 import { jsonCall } from '../llm.js';
-import { readLines } from '../io.js';
+import { exists, readJson, readLines, writeJson } from '../io.js';
 import { ARTICLE_SIGNAL_HINTS } from '../detectors.js';
 import { SiteVerdictSchema, type Codemap, type Finding, type Obligation } from '../types.js';
 
@@ -89,12 +89,22 @@ export async function matchObligations(
   obligations: Obligation[],
   codemap: Codemap,
   repoRoot: string,
+  checkpointDir?: string,
 ): Promise<Finding[]> {
   const { ms, docs } = buildIndex(codemap, repoRoot);
   const findings: Finding[] = [];
   let fCounter = 0;
 
   for (const ob of obligations) {
+    // Per-obligation checkpoint: a crash mid-run only costs the current obligation.
+    const ckpt = checkpointDir ? join(checkpointDir, `${ob.id}.json`) : null;
+    if (ckpt && exists(ckpt)) {
+      const cached = readJson<Omit<Finding, 'id'>>(ckpt);
+      fCounter += 1;
+      findings.push({ ...cached, id: `F-${String(fCounter).padStart(3, '0')}` });
+      console.log(`  match: ${ob.id} — reused checkpoint`);
+      continue;
+    }
     const cands = candidatesFor(ob, ms, docs);
     console.log(`  match: ${ob.id} ${ob.articleRef} — ${cands.length} candidates`);
     const sites: Finding['sites'] = [];
@@ -142,7 +152,7 @@ ${snippet}
     const confidence = relevantCount === 0 ? 0.3 : Math.round(((votes[status] ?? 0) / relevantCount) * 100) / 100;
 
     fCounter += 1;
-    findings.push({
+    const finding: Finding = {
       id: `F-${String(fCounter).padStart(3, '0')}`,
       obligationId: ob.id,
       status,
@@ -152,7 +162,12 @@ ${snippet}
         relevantCount === 0
           ? `No code surface in scope was judged relevant to ${ob.articleRef}.`
           : `${relevantCount} relevant site(s); ${votes['gap'] ?? 0} gap, ${votes['partial'] ?? 0} partial, ${votes['compliant'] ?? 0} compliant. Overall: ${status}.`,
-    });
+    };
+    if (ckpt) {
+      const { id: _id, ...rest } = finding;
+      writeJson(ckpt, rest);
+    }
+    findings.push(finding);
   }
   return findings;
 }
