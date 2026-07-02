@@ -21,10 +21,10 @@
 | **Demo video** | `<YOUTUBE_URL>`（视频上传后回填，见文末"待办#2"） |
 | **X / Twitter** | `https://x.com/Stetang3438` |
 
-**Vision 粘贴块（249 字符，问题先行）：**
+**Vision 粘贴块（244 字符，问题先行）：**
 
 【复制开始】
-A new regulation means weeks of compliance archaeology: legal memos, system mapping, grepping legacy code, hand-built audit trails. RegShift does it in hours — obligations pinned to real code, human-approved fixes, regulator-ready traceability, fully local.
+A new regulation means weeks of compliance archaeology: system mapping, grepping legacy code, hand-built audit trails. RegShift does it in hours — obligations pinned to real code, human-approved fixes, regulator-ready traceability, fully local.
 【复制结束】
 
 ---
