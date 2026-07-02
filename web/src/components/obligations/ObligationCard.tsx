@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { severityLabel } from '../../lib/format';
 import type { TraceRow } from '../../lib/matrix';
 import { ArticleChip } from '../ui/ArticleChip';
@@ -14,6 +14,11 @@ interface ObligationCardProps {
 
 export function ObligationCard({ row, defaultOpen }: ObligationCardProps) {
   const [isOpen, setOpen] = useState(defaultOpen);
+  // Deep links (?open=OB-…) must expand the target even when the card is
+  // already mounted — initial state alone ignores later navigations.
+  useEffect(() => {
+    if (defaultOpen) setOpen(true);
+  }, [defaultOpen]);
   const { obligation, findings } = row;
   const bodyId = `${obligation.id}-body`;
 

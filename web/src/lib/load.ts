@@ -1,9 +1,11 @@
 /**
  * Artifact loading with per-file diagnostics.
  *
- * Every failure (network, HTTP status, JSON parse, shape mismatch) is
- * attributed to a specific artifact file so the UI can render an exact
- * diagnostic panel instead of a blank screen.
+ * Network, HTTP-status, JSON-parse and key-field failures are attributed to a
+ * specific artifact file so the UI renders an exact diagnostic panel instead
+ * of a blank screen. Validation is intentionally structural (ids, arrays and
+ * the fields navigation depends on) rather than exhaustive — deeper shape
+ * errors fall through to the render error boundary.
  */
 import type { CodeMap, Finding, Obligation, Proposal, RunBundle, RunMeta } from './types';
 
@@ -48,7 +50,9 @@ async function fetchArtifact(baseUrl: string, runId: string, file: string): Prom
   const url = `${baseUrl}runs/${runId}/${file}`;
   let response: Response;
   try {
-    response = await fetch(url);
+    // Bounded fetch: a hung request must surface the diagnostic panel (which
+    // has the retry button) instead of spinning forever.
+    response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
     throw new ArtifactError(file, `network error fetching ${url}: ${detail}`);

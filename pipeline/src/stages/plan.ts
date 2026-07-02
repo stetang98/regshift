@@ -110,6 +110,8 @@ export async function planChanges(
             const idx = changes.findIndex((c) => c.file === primary.file);
             const target = idx >= 0 ? idx : 0;
             changes[target] = { file: primary.file, kind: 'modify', sketch: normalized, isFullDiff: true };
+          } else {
+            console.warn(`    ! diff for ${primary.file} failed normalization (missing headers/hunks) — keeping plan sketch`);
           }
         } catch (err) {
           console.warn(`    ! diff generation failed: ${(err as Error).message.slice(0, 120)} — keeping plan sketch`);

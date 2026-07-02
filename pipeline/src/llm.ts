@@ -7,15 +7,21 @@ import type { z } from 'zod';
  *  - "openai": any OpenAI-compatible /v1/chat/completions endpoint, so judges
  *    can point LLM_BASE_URL/LLM_API_KEY at a hosted model without code changes.
  */
+function envNum(name: string, fallback: number): number {
+  const raw = process.env[name];
+  const n = raw === undefined || raw === '' ? fallback : Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
 const PROVIDER = process.env.LLM_PROVIDER ?? 'ollama';
 const BASE_URL = process.env.LLM_BASE_URL ?? 'http://localhost:11434';
 const MODEL = process.env.LLM_MODEL ?? 'qwen2.5-coder:7b';
 const API_KEY = process.env.LLM_API_KEY ?? '';
-const NUM_CTX = Number(process.env.LLM_NUM_CTX ?? 12288);
+const NUM_CTX = envNum('LLM_NUM_CTX', 12288);
 // Ollama defaults num_predict to 128, which silently truncates structured
 // output — under JSON grammar the model "legally" closes objects early and
 // drops required fields. Always set an explicit generous budget.
-const NUM_PREDICT = Number(process.env.LLM_NUM_PREDICT ?? 2048);
+const NUM_PREDICT = envNum('LLM_NUM_PREDICT', 2048);
 const MAX_ATTEMPTS = 3;
 
 export interface ChatMessage {
@@ -31,7 +37,7 @@ export class LlmError extends Error {
 }
 
 // A single hung request must never stall an unattended multi-hour run.
-const REQUEST_TIMEOUT_MS = Number(process.env.LLM_TIMEOUT_MS ?? 240_000);
+const REQUEST_TIMEOUT_MS = envNum('LLM_TIMEOUT_MS', 240_000);
 
 async function chatOllama(messages: ChatMessage[], json: boolean): Promise<string> {
   const res = await fetch(`${BASE_URL}/api/chat`, {
@@ -108,19 +114,24 @@ export async function jsonCall<T>(schema: z.ZodType<T>, system: string, user: st
   ];
   const attempts: string[] = [];
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    const raw = await chat(messages, true);
+    let raw = '';
     try {
+      raw = await chat(messages, true);
       return schema.parse(JSON.parse(extractJson(raw)));
     } catch (err) {
+      // Transport errors (timeout, connection reset) retry the same way
+      // validation errors do — an unattended run must survive both.
       const detail = err instanceof Error ? err.message : String(err);
       attempts.push(`attempt ${attempt}: ${detail.slice(0, 400)}`);
-      messages.push(
-        { role: 'assistant', content: raw.slice(0, 2000) },
-        {
-          role: 'user',
-          content: `Your previous output failed validation: ${detail.slice(0, 600)}\nReturn ONLY corrected JSON matching the required shape. No prose.`,
-        },
-      );
+      if (raw !== '') {
+        messages.push(
+          { role: 'assistant', content: raw.slice(0, 2000) },
+          {
+            role: 'user',
+            content: `Your previous output failed validation: ${detail.slice(0, 600)}\nReturn ONLY corrected JSON matching the required shape. No prose.`,
+          },
+        );
+      }
     }
   }
   throw new LlmError(`LLM output failed validation after ${MAX_ATTEMPTS} attempts`, attempts);

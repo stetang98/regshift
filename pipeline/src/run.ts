@@ -6,6 +6,7 @@ import { parseRegulation } from './stages/parseReg.js';
 import { buildCodemap } from './stages/mapCode.js';
 import { matchObligations } from './stages/match.js';
 import { planChanges } from './stages/plan.js';
+import { CodemapSchema, FindingSchema, ObligationSchema, ProposalSchema } from './types.js';
 import type { Codemap, Finding, Obligation, Proposal, Run } from './types.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -45,7 +46,9 @@ async function main(): Promise<void> {
     writeJson(path('obligations.json'), obligations);
     console.log(`✓ parse-reg: ${obligations.length} obligations`);
   } else {
-    obligations = exists(path('obligations.json')) ? readJson<Obligation[]>(path('obligations.json')) : [];
+    obligations = exists(path('obligations.json'))
+      ? ObligationSchema.array().parse(readJson(path('obligations.json')))
+      : [];
     console.log(`• parse-reg: reused checkpoint (${obligations.length})`);
   }
 
@@ -55,7 +58,7 @@ async function main(): Promise<void> {
     writeJson(path('codemap.json'), codemap);
     console.log(`✓ map-code: ${codemap.files.length} files, ${codemap.files.reduce((n, f) => n + f.chunks.length, 0)} chunks`);
   } else {
-    codemap = exists(path('codemap.json')) ? readJson<Codemap>(path('codemap.json')) : { files: [] };
+    codemap = exists(path('codemap.json')) ? CodemapSchema.parse(readJson(path('codemap.json'))) : { files: [] };
     console.log(`• map-code: reused checkpoint (${codemap.files.length} files)`);
   }
 
@@ -70,7 +73,7 @@ async function main(): Promise<void> {
     writeJson(path('findings.json'), findings);
     console.log(`✓ match: ${findings.length} findings, ${findings.filter((f) => f.status === 'gap').length} gaps`);
   } else {
-    findings = exists(path('findings.json')) ? readJson<Finding[]>(path('findings.json')) : [];
+    findings = exists(path('findings.json')) ? FindingSchema.array().parse(readJson(path('findings.json'))) : [];
     console.log(`• match: reused checkpoint (${findings.length})`);
   }
 
@@ -85,7 +88,7 @@ async function main(): Promise<void> {
     writeJson(path('proposals.json'), proposals);
     console.log(`✓ plan: ${proposals.length} proposals`);
   } else {
-    proposals = exists(path('proposals.json')) ? readJson<Proposal[]>(path('proposals.json')) : [];
+    proposals = exists(path('proposals.json')) ? ProposalSchema.array().parse(readJson(path('proposals.json'))) : [];
     console.log(`• plan: reused checkpoint (${proposals.length})`);
   }
 

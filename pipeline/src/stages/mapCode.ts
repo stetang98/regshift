@@ -99,7 +99,7 @@ export function buildCodemap(repoRoot: string, scope: string[]): Codemap {
         });
         raw = extractChunks(ast.program.body as Node[]);
       } catch {
-        // fall through to whole-module chunk
+        console.warn(`  map-code: failed to parse ${rel} — indexed as a single module chunk`);
       }
       if (raw.length === 0) {
         raw = [{ kind: 'module', name: rel.split('/').pop() ?? rel, startLine: 1, endLine: lineCount }];

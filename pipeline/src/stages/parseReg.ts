@@ -34,7 +34,9 @@ function normalize(s: string): string {
 function paragraphText(body: string, ref: string): string | null {
   const num = ref.match(/^\d+/)?.[0];
   if (!num) return null;
-  const re = new RegExp(`^\\s*${num}\\.\\s+([\\s\\S]*?)(?=^\\s*\\d+\\.\\s|\\Z)`, 'm');
+  // (?![\s\S]) is true end-of-input — \Z does not exist in JS and `$` under
+  // the m flag would stop at the first line break.
+  const re = new RegExp(`^\\s*${num}\\.\\s+([\\s\\S]*?)(?=^\\s*\\d+\\.\\s|(?![\\s\\S]))`, 'm');
   const m = body.match(re);
   return m ? m[1]!.trim() : null;
 }
